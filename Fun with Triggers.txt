@@ -1,0 +1,25 @@
+1. -- Q: How do I automatically track who modified a customer record and when?
+
+2. -- A: I will use an AFTER UPDATE trigger that leverages the 'inserted' virtual table.
+
+3. -- Target: Confirm SUSER_NAME() capturing capability.
+SELECT SUSER_NAME(), GETDATE();
+
+4. CREATE TRIGGER dbo.tr_t_w3_schools_customers_AfterUpdate
+ON dbo.t_w3_schools_customers
+AFTER UPDATE
+AS
+BEGIN
+    SET NOCOUNT ON;
+
+    UPDATE t
+    SET t.last_modified_date = GETDATE(),
+        t.last_modified_by = SUSER_NAME() -- Tracks the database/server user
+    FROM dbo.t_w3_schools_customers t
+    INNER JOIN inserted i ON t.CustomerID = i.CustomerID; 
+END;
+
+5. UPDATE dbo.t_w3_schools_customers SET ContactName = 'Test Update' WHERE CustomerID = 1;
+SELECT CustomerID, ContactName, last_modified_date, last_modified_by FROM dbo.t_w3_schools_customers WHERE CustomerID = 1;
+
+6. -- Q: How can I build an independent audit log table to hold historical changes?

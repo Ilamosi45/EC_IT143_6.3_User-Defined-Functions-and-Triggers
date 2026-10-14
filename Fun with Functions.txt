@@ -21,7 +21,6 @@ BEGIN
         ELSE TRIM(@ContactName)
     END;
 END;
-GO
 
 -- Scalar Function to Extract Last Name
 CREATE FUNCTION dbo.fn_GetLastName (@ContactName NVARCHAR(100))
